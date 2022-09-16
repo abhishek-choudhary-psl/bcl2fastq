@@ -17,9 +17,17 @@ process bcl2fastq {
 
     """
     bcl2fastq \
+        --use-bases-mask=Y26,I8,Y98 \
+        --create-fastq-for-index-reads \
+        --minimum-trimmed-read-length=8 \
+        --mask-short-adapter-reads=8 \
+        --ignore-missing-positions \
+        --ignore-missing-controls \
+        --ignore-missing-filter \
+        --ignore-missing-bcls \
         --runfolder-dir ${input_dir} \
         --output-dir . \
-        --sample-sheet ${input_dir}/SampleSheet.csv \
+        --sample-sheet ${input_dir}/cellranger-tiny-bcl-simple-1.2.0.csv \
         --interop-dir ${input_dir}/InterOp \
         --input-dir ${input_dir}/Data/Intensities/BaseCalls \
         --stats-dir ./Stats \
@@ -31,9 +39,4 @@ process bcl2fastq {
 workflow {
    def input_ch = Channel.fromPath(params.input_dir)
    bcl2fastq(input_ch)
-}
-
-workflow.onComplete {
-  def fastq_output_file = new File("${params.output_dir}/fastq_complete.txt")
-  fastq_output_file.write "FastQ process is completed!!\n"
 }
